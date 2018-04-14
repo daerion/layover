@@ -1,5 +1,6 @@
 port: 3000
 logLevel: debug
+baseUrl: http://localhost:3000
 
 directories:
   originals: images/original

@@ -1,5 +1,9 @@
 port: PORT
 logLevel: LOG_LEVEL
+baseUrl: BASE_URL
 
 directories:
   originals: ORIGINALS_DIRECTORY
+
+overlay:
+  source: OVERLAY_SOURCE

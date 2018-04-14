@@ -1,7 +1,11 @@
+import config from 'config'
+import path from 'path'
+
 import logger from './logger'
+import { GET_SCALED_IMAGE } from './route-names'
 
 /**
- * Simple helper middleware thet sets response body to the provided functions return value.
+ * Simple helper middleware thet sets response body to the value that is returned from the provided function.
  * Additionally sets proper status code (204 if the return value is undefined, 200 otherwise)
  *
  * @param fn
@@ -12,7 +16,7 @@ export const useReturnValue = (fn) => async (ctx, next) => {
 
   if (typeof response !== 'undefined') {
     ctx.status = 200
-    ctx.response = response
+    ctx.body = response
   } else {
     ctx.status = 204
   }
@@ -53,10 +57,16 @@ export const requestProfiler = () => async (ctx, next) => {
   }
 }
 
-export const uploadImage = () => {
+export const imageUploader = (baseUrl = config.get('baseUrl')) => async ({ router, request: { files } }) => {
+  const filename = path.basename(files[0].path)
+  const id = path.basename(filename, path.extname(filename))
+  const uri = `${baseUrl}${router.url(GET_SCALED_IMAGE, { id })}`
 
+  return {
+    uri
+  }
 }
 
-export const getScaledImage = () => {
+export const imageScaler = () => () => {
 
 }

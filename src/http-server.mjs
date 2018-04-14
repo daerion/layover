@@ -6,12 +6,7 @@ import createRouter from './router'
 import logger from './logger'
 import { errorHandler, requestProfiler } from './middleware'
 
-const defaults = {
-  port: config.get('port'),
-  router: createRouter()
-}
-
-export const server = ({ port, router } = defaults) => {
+export default function startServer (port = config.get('port'), router = createRouter()) {
   logger.info('Starting HTTP server, listening on port %s.', port)
 
   const koa = new Koa()
