@@ -10,5 +10,19 @@
     "test": "mocha -r esm test/*.mjs"
   },
   "author": "Michael Smesnik <michael.smesnik@gmail.com>",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "config": "^1.30.0",
+    "esm": "^3.0.18",
+    "koa": "^2.5.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-router": "^7.4.0",
+    "winston": "^3.0.0-rc4"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.1.0",
+    "sinon": "^4.5.0",
+    "standard": "^11.0.1"
+  }
 }
