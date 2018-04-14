@@ -1,0 +1,5 @@
+port: PORT
+logLevel: LOG_LEVEL
+
+directories:
+  originals: ORIGINALS_DIRECTORY
