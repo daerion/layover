@@ -3,3 +3,7 @@ logLevel: debug
 
 directories:
   originals: images/original
+
+overlay:
+  source: images/snowball-logo.svg
+
