@@ -1,0 +1,9 @@
+node_modules/
+!dist/node_modules/
+!src/node_modules/
+npm-debug.log*
+.idea/
+.vagrant/
+config/local-*
+.esm-cache
+yarn-error.log

@@ -1,0 +1,14 @@
+{
+  "name": "layover",
+  "version": "1.0.0",
+  "description": "A small http server that adds an overlay to uploaded images",
+  "main": "server.js",
+  "engines": {
+    "node": ">=7.6.0"
+  },
+  "scripts": {
+    "test": "mocha -r esm test/*.mjs"
+  },
+  "author": "Michael Smesnik <michael.smesnik@gmail.com>",
+  "license": "ISC"
+}
