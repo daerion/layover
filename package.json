@@ -7,13 +7,15 @@
     "node": ">=7.6.0"
   },
   "scripts": {
-    "test": "mocha -r esm test/*.mjs"
+    "lint": "standard",
+    "test": "LOG_LEVEL=none mocha -r esm test/*.mjs"
   },
   "author": "Michael Smesnik <michael.smesnik@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "config": "^1.30.0",
     "esm": "^3.0.18",
+    "http-errors": "^1.6.3",
     "koa": "^2.5.0",
     "koa-bodyparser": "^4.2.0",
     "koa-router": "^7.4.0",
