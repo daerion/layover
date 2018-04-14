@@ -1,8 +1,14 @@
 import config from 'config'
 import winston from 'winston'
 
-const { createLogger, format, transports } = winston
+const { format } = winston
+const level = config.get('logLevel')
+const loggingDisabled = level.toLowerCase() === 'none'
 
+const stdout = new winston.transports.Console({
+  silent: loggingDisabled,
+  stderrLevels: [ 'error' ]
+})
 /**
  * @property {Function} debug
  * @property {Function} verbose
@@ -11,12 +17,12 @@ const { createLogger, format, transports } = winston
  * @property {Function} error
  * @type {Object}
  */
-export default createLogger({
-  level: config.get('logLevel'),
+export default winston.createLogger({
+  level,
+  transports: [ stdout ],
   format: format.combine(
     format.timestamp(),
     format.splat(),
     format.printf((info) => `[${info.timestamp}] [${info.level}] ${info.message}`)
-  ),
-  transports: [ new transports.Console() ]
+  )
 })
