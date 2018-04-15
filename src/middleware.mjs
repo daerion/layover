@@ -1,8 +1,14 @@
 import config from 'config'
+import createError from 'http-errors'
+import mimeTypes from 'mime-types'
+import fs from 'fs'
 import path from 'path'
+import sharp from 'sharp'
+import util from 'util'
 
 import logger from './logger'
 import { GET_SCALED_IMAGE } from './route-names'
+import { createScaledImage } from './helpers'
 
 /**
  * Simple helper middleware thet sets response body to the value that is returned from the provided function.
@@ -68,10 +74,59 @@ export const imageUploader = (baseUrl = config.get('baseUrl')) => async (ctx, ne
   return next()
 }
 
-export const imageScaler = (baseUrl = config.get('baseUrl')) => (ctx) => {
-  const { router, params: { filename } } = ctx
+export const imageScaler = (dependencies) => {
+  const {
+    baseUrl = config.get('baseUrl'),
+    stat = util.promisify(fs.stat),
+    directories = config.get('directories'),
+    createFile = createScaledImage,
+    createStream = fs.createReadStream
+  } = dependencies
 
-  ctx.set('X-Image-Url', `${baseUrl}${router.url(GET_SCALED_IMAGE, { filename })}`)
+  return async (ctx, next) => {
+    const { router, params: { filename } } = ctx
 
-  return { filename }
+    const input = `${directories.originals}/${filename}`
+    const output = `${directories.edited}/${filename}`
+
+    try {
+      logger.verbose('Checking for input file %s.', input)
+
+      await stat(input)
+
+      logger.debug('Input file %s exists.', input)
+    } catch (e) {
+      if (e.code === 'ENOENT') {
+        logger.warn('Input file %s does not exist.', input)
+
+        throw createError(404)
+      }
+
+      throw e
+    }
+
+    try {
+      logger.verbose('Checking for scaled output file %s.', output)
+
+      await stat(output)
+
+      logger.debug('Scaled output file %s exists.', output)
+    } catch (e) {
+      if (e.code !== 'ENOENT') {
+        throw e
+      }
+
+      logger.verbose('Scaled output file %s does not exist - creating.', output)
+
+      await createFile(input, output)
+    }
+
+    logger.debug('Creating read stream for scaled output file %s.', output)
+
+    ctx.set('X-Image-Url', `${baseUrl}${router.url(GET_SCALED_IMAGE, { filename })}`)
+    ctx.set('Content-Type', mimeTypes.contentType(filename))
+    ctx.body = createStream(output)
+
+    return next()
+  }
 }

@@ -4,6 +4,7 @@ baseUrl: http://localhost:3000
 
 directories:
   originals: images/original
+  edited: images/edited
 
 overlay:
   source: images/snowball-logo.svg

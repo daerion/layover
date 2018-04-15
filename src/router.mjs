@@ -22,7 +22,7 @@ export default function createRouter () {
     .get(STATUS, '/status', useReturnValue(() => undefined))
 
     .post(UPLOAD_IMAGE, '/images', uploader, imageUploader())
-    .get(GET_SCALED_IMAGE, '/images/:filename', useReturnValue(imageScaler()))
+    .get(GET_SCALED_IMAGE, '/images/:filename', imageScaler())
 
   return router
 }

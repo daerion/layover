@@ -1,12 +1,15 @@
 /* eslint-env mocha */
 
 import chai from 'chai'
+import chaiHelpers from '@tailored-apps/helpers/chai'
+import createError from 'http-errors'
 import sinon from 'sinon'
 
 import * as middleware from '../src/middleware'
 import { GET_SCALED_IMAGE } from '../src/route-names'
 
 const { expect } = chai
+const { expectAsyncError } = chaiHelpers
 
 describe('middleware', () => {
   describe('response helper', () => {
@@ -85,8 +88,52 @@ describe('middleware', () => {
 
       await handleUpload(ctx, sinon.spy())
 
-      sinon.assert.calledWith(ctx.router.url, GET_SCALED_IMAGE, { id: 'baz' })
+      sinon.assert.calledWith(ctx.router.url, GET_SCALED_IMAGE, { filename: 'baz.png' })
       sinon.assert.calledWith(ctx.redirect, 'http://base.url/some/route')
+    })
+  })
+
+  describe('image scaler', () => {
+    const enoent = () => {
+      const err = new Error()
+      err.code = 'ENOENT'
+
+      return err
+    }
+
+    const ctx = (filename) => ({ params: { filename }, router: { url: sinon.spy() }, set: sinon.spy() })
+
+    it('throws a 404 error if the input filedoes not exist', async () => {
+      const stat = sinon.stub().rejects(enoent())
+      const runMiddleware = middleware.imageScaler({ stat })
+
+      await expectAsyncError(() => runMiddleware(ctx(), sinon.spy()), (err) => {
+        expect(err.status).to.equal(404)
+      })
+    })
+
+    it('creates the image file if it does not exist', async () => {
+      const stat = sinon.stub()
+        .onFirstCall().resolves()
+        .onSecondCall().rejects(enoent())
+
+      const createFile = sinon.spy()
+      const createStream = sinon.spy()
+
+      const runMiddleware = middleware.imageScaler({
+        stat,
+        createFile,
+        createStream,
+        directories: {
+          originals: 'orig',
+          edited: 'edited'
+        }
+      })
+
+      await runMiddleware(ctx('baz.png'), sinon.spy())
+
+      sinon.assert.calledWith(createFile, 'orig/baz.png', 'edited/baz.png')
+      sinon.assert.calledWith(createStream, 'edited/baz.png')
     })
   })
 })
