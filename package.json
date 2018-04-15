@@ -13,6 +13,7 @@
   "author": "Michael Smesnik <michael.smesnik@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "@tailored-apps/helpers": "^1.1.0",
     "config": "^1.30.0",
     "esm": "^3.0.18",
     "http-errors": "^1.6.3",
@@ -20,6 +21,8 @@
     "koa-bodyparser": "^4.2.0",
     "koa-busboy": "^1.1.1",
     "koa-router": "^7.4.0",
+    "mime-types": "^2.1.18",
+    "sharp": "^0.20.1",
     "uuid": "^3.2.1",
     "winston": "^3.0.0-rc4"
   },
