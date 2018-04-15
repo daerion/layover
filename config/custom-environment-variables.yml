@@ -3,7 +3,12 @@ logLevel: LOG_LEVEL
 baseUrl: BASE_URL
 
 directories:
-  originals: ORIGINALS_DIRECTORY
+  originals: ORIG_DIRECTORY
+  edited: EDITED_DIRECTORY
 
 overlay:
-  source: OVERLAY_SOURCE
+  image: OVERLAY_IMAGE
+  size: OVERLAY_SIZE
+  position: OVERLAY_POSITION
+
+imageSize: IMAGE_SIZE

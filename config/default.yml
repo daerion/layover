@@ -7,5 +7,9 @@ directories:
   edited: images/edited
 
 overlay:
-  source: images/snowball-logo.svg
+  image: images/snowball-logo.svg
+  size: 200
+  # can be any one of the supported sharp.gravity constants
+  position: center
 
+imageSize: 400

@@ -3,7 +3,6 @@ import createError from 'http-errors'
 import mimeTypes from 'mime-types'
 import fs from 'fs'
 import path from 'path'
-import sharp from 'sharp'
 import util from 'util'
 
 import logger from './logger'
@@ -64,19 +63,22 @@ export const requestProfiler = () => async (ctx, next) => {
 }
 
 export const imageUploader = (baseUrl = config.get('baseUrl')) => async (ctx, next) => {
+  // busboy will put uploaded files in ctx.request.files
   const { router, request: { files } } = ctx
 
   const filename = path.basename(files[0].path)
-  const uri = `${baseUrl}${router.url(GET_SCALED_IMAGE, { filename })}`
+  const url = `${baseUrl}${router.url(GET_SCALED_IMAGE, { filename })}`
 
-  ctx.redirect(uri)
+  ctx.body = {
+    url
+  }
 
   return next()
 }
 
-export const imageScaler = (dependencies) => {
+export const imageScaler = (dependencies = { }) => {
+  // dependency- and config injection
   const {
-    baseUrl = config.get('baseUrl'),
     stat = util.promisify(fs.stat),
     directories = config.get('directories'),
     createFile = createScaledImage,
@@ -84,8 +86,9 @@ export const imageScaler = (dependencies) => {
   } = dependencies
 
   return async (ctx, next) => {
-    const { router, params: { filename } } = ctx
+    const { params: { filename } } = ctx
 
+    // Source for the scaled image is the originally uploaded file
     const input = `${directories.originals}/${filename}`
     const output = `${directories.edited}/${filename}`
 
@@ -123,7 +126,6 @@ export const imageScaler = (dependencies) => {
 
     logger.debug('Creating read stream for scaled output file %s.', output)
 
-    ctx.set('X-Image-Url', `${baseUrl}${router.url(GET_SCALED_IMAGE, { filename })}`)
     ctx.set('Content-Type', mimeTypes.contentType(filename))
     ctx.body = createStream(output)
 
