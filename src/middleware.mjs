@@ -74,7 +74,7 @@ export const imageUploader = (baseUrl = config.get('baseUrl')) => async (ctx, ne
   return next()
 }
 
-export const imageScaler = (dependencies) => {
+export const imageScaler = (dependencies = { }) => {
   const {
     baseUrl = config.get('baseUrl'),
     stat = util.promisify(fs.stat),

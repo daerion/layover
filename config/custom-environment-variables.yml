@@ -5,5 +5,4 @@ baseUrl: BASE_URL
 directories:
   originals: ORIGINALS_DIRECTORY
 
-overlay:
-  source: OVERLAY_SOURCE
+overlayImage: OVERLAY_IMAGE
