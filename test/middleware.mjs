@@ -71,8 +71,9 @@ describe('middleware', () => {
   })
 
   describe('image uploader', () => {
-    it('returns resource uri for scaled image after upload', async () => {
+    it('redirects to uri for scaled image after upload', async () => {
       const ctx = {
+        redirect: sinon.spy(),
         request: { files: [ { path: '/foo/bar/baz.png' } ] },
         router: {
           url: sinon.stub().returns('/some/route')
@@ -81,11 +82,11 @@ describe('middleware', () => {
       const baseUrl = 'http://base.url'
 
       const handleUpload = middleware.imageUploader(baseUrl)
-      const response = await handleUpload(ctx)
+
+      await handleUpload(ctx, sinon.spy())
 
       sinon.assert.calledWith(ctx.router.url, GET_SCALED_IMAGE, { id: 'baz' })
-
-      expect(response).to.deep.equal({ uri: 'http://base.url/some/route' })
+      sinon.assert.calledWith(ctx.redirect, 'http://base.url/some/route')
     })
   })
 })

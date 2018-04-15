@@ -57,16 +57,21 @@ export const requestProfiler = () => async (ctx, next) => {
   }
 }
 
-export const imageUploader = (baseUrl = config.get('baseUrl')) => async ({ router, request: { files } }) => {
-  const filename = path.basename(files[0].path)
-  const id = path.basename(filename, path.extname(filename))
-  const uri = `${baseUrl}${router.url(GET_SCALED_IMAGE, { id })}`
+export const imageUploader = (baseUrl = config.get('baseUrl')) => async (ctx, next) => {
+  const { router, request: { files } } = ctx
 
-  return {
-    uri
-  }
+  const filename = path.basename(files[0].path)
+  const uri = `${baseUrl}${router.url(GET_SCALED_IMAGE, { filename })}`
+
+  ctx.redirect(uri)
+
+  return next()
 }
 
-export const imageScaler = () => () => {
+export const imageScaler = (baseUrl = config.get('baseUrl')) => (ctx) => {
+  const { router, params: { filename } } = ctx
 
+  ctx.set('X-Image-Url', `${baseUrl}${router.url(GET_SCALED_IMAGE, { filename })}`)
+
+  return { filename }
 }
