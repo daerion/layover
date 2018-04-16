@@ -62,18 +62,14 @@ export const requestProfiler = () => async (ctx, next) => {
   }
 }
 
-export const imageUploader = (baseUrl = config.get('baseUrl')) => async (ctx, next) => {
+export const imageUploader = (baseUrl = config.get('baseUrl')) => async (ctx) => {
   // busboy will put uploaded files in ctx.request.files
   const { router, request: { files } } = ctx
 
   const filename = path.basename(files[0].path)
   const url = `${baseUrl}${router.url(GET_SCALED_IMAGE, { filename })}`
 
-  ctx.body = {
-    url
-  }
-
-  return next()
+  return { url }
 }
 
 export const imageScaler = (dependencies = { }) => {

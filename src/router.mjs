@@ -21,7 +21,7 @@ export default function createRouter () {
   // Endpoint that returns "204 No Content" when the API is up and running
     .get(STATUS, '/status', useReturnValue(() => undefined))
 
-    .post(UPLOAD_IMAGE, '/images', uploader, imageUploader())
+    .post(UPLOAD_IMAGE, '/images', uploader, useReturnValue(imageUploader()))
     .get(GET_SCALED_IMAGE, '/images/:filename', imageScaler())
 
   return router
