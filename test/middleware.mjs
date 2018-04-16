@@ -103,7 +103,7 @@ describe('middleware', () => {
 
     const ctx = (filename) => ({ params: { filename }, router: { url: sinon.spy() }, set: sinon.spy() })
 
-    it('throws a 404 error if the input filedoes not exist', async () => {
+    it('throws a 404 error if the input file does not exist', async () => {
       const stat = sinon.stub().rejects(enoent())
       const runMiddleware = middleware.imageScaler({ stat })
 
