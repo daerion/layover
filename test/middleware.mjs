@@ -2,7 +2,6 @@
 
 import chai from 'chai'
 import chaiHelpers from '@tailored-apps/helpers/chai'
-import createError from 'http-errors'
 import sinon from 'sinon'
 
 import * as middleware from '../src/middleware'
